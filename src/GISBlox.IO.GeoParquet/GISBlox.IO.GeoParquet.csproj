@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>GISBlox.IO.GeoParquet</PackageId>
+    <RootNamespace>GISBlox.IO.GeoParquet</RootNamespace>
+    <AssemblyName>GISBlox.IO.GeoParquet</AssemblyName>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <SignAssembly>False</SignAssembly>
+    <Version>$(VersionPrefix)</Version>
+    <Description>This library provides .NET support for reading and writing GeoParquet files.</Description>
+    <Authors>Karlo Bartels</Authors>
+    <Company>Bartels Online</Company>
+    <Copyright>Copyright © $([System.DateTime]::UtcNow.Year) $(Company)</Copyright>
+    <PackageProjectUrl>https://github.com/GISBlox/GISBlox.IO.GeoParquet</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/GISBlox/GISBlox.IO.GeoParquet.git</RepositoryUrl>
+    <PackageTags>gisblox;geoparquet</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <IncludeSymbols>True</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;IDE0063</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn>1701;1702;IDE0063</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NetTopologySuite" Version="2.5.0" />
+    <PackageReference Include="ParquetSharp" Version="16.1.0" />
+  </ItemGroup>
+
+</Project>
