@@ -7,11 +7,11 @@ It uses [ParquetSharp](https://github.com/G-Research/ParquetSharp) under the hoo
 
 ## Features
 
-- Read GeoParquet metadata.
-- Read GeoParquet files into a `DataTable`.
-- Write a `DataTable` to a GeoParquet file.
+- Read and write GeoParquet metadata.
+- Read a single column, some columns or all columns in GeoParquet files into a `DataTable`.
+- Write a `DataTable` with one or more geometry columns to a GeoParquet file.
 - Automatically infers the schema of the `GeoParquet` file from the `DataTable` and vice-versa.
-- Support for reading and writing geometries in WKT and WKB formats.
+- Support for reading and writing geometries in `WKT` and `WKB` formats.
 
 ## Installation
 
@@ -63,7 +63,7 @@ DataTable dataTable = GeoParquetReader.ReadColumn(fileName, "geometry", Geometry
 ```
 
 The `ReadColumn` method reads a single column from a GeoParquet file into a `DataTable`. 
-The `column` parameter either specifies the name of the column to read or the column index:
+The `column` parameter either specifies the name of the column or the column index:
 
 ```csharp
 string fileName = "path/to/file.parquet";
