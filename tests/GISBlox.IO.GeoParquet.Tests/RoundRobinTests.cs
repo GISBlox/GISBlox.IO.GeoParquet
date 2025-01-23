@@ -7,7 +7,7 @@ namespace GISBlox.IO.GeoParquet.Tests
    public class RoundRobinTests
    {
       private static readonly string BASE_PATH = Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
-      private static readonly string SAMPLES_PATH = Path.GetFullPath(Path.Combine(BASE_PATH, "..\\..\\..\\.\\Samples"));
+      private static readonly string SAMPLES_PATH = Path.GetFullPath(Path.Combine(BASE_PATH, "..\\..\\..\\..\\.\\Samples"));
 
       [TestMethod]
       public void WriteAndReadSingleGeometryType()
