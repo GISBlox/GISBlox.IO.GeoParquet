@@ -43,7 +43,7 @@ namespace GISBlox.IO.GeoParquet.Extensions
          {
             ColumnDescriptor column = schema.Column(columnIndex);
 
-            Type parquetColumnType = typeof(ParquetColumn<>).MakeGenericType(column.GetClrType());
+            Type parquetColumnType = typeof(ParquetColumn<>).MakeGenericType(column.GetClrType(true));
             if (Activator.CreateInstance(parquetColumnType, column.Name) is ParquetColumnMetadata obj)
             {
                obj.FieldId = columnIndex;
@@ -57,11 +57,12 @@ namespace GISBlox.IO.GeoParquet.Extensions
       /// Gets the CLR type of a <see cref="ColumnDescriptor"/>.
       /// </summary>
       /// <param name="column">A <see cref="ColumnDescriptor"/> type.</param>
+      /// <param name="allowNullable">True if nullable types are allowed.</param>
       /// <returns>The CLR type of the <see cref="ColumnDescriptor"/>.</returns>
       /// <exception cref="NotSupportedException"></exception>
-      public static Type GetClrType(this ColumnDescriptor column)
+      public static Type GetClrType(this ColumnDescriptor column, bool allowNullable)
       {
-         return column.PhysicalType switch
+         Type clrType = column.PhysicalType switch
          {
             var t when t == PhysicalType.Int32 => typeof(int),
             var t when t == PhysicalType.Float => typeof(float),
@@ -71,7 +72,15 @@ namespace GISBlox.IO.GeoParquet.Extensions
             var t when t == PhysicalType.Int64 => typeof(long),
             var t when t == PhysicalType.Boolean => typeof(bool),
             _ => throw new NotSupportedException($"Unsupported column type: {column.PhysicalType}")
-         };         
+         };
+
+         // Create nullable types if needed
+         if (allowNullable && clrType.IsValueType && column.MaxDefinitionLevel > 0)
+         {
+            return typeof(Nullable<>).MakeGenericType(clrType);
+         }
+
+         return clrType;
       }
 
       /// <summary>
@@ -101,7 +110,7 @@ namespace GISBlox.IO.GeoParquet.Extensions
          for (int columnIndex = 0; columnIndex < schema.NumColumns; ++columnIndex)
          {
             ColumnDescriptor column = schema.Column(columnIndex);
-            dataTable.Columns.Add(column.Name, column.GetClrType());
+            dataTable.Columns.Add(column.Name, column.GetClrType(false));
          }
          dataTable.AddGeoProcessingMetadata(reader.GeoFileMetadata());
          return dataTable;
@@ -134,7 +143,7 @@ namespace GISBlox.IO.GeoParquet.Extensions
             ColumnDescriptor? column = GetColumnDescriptor(schema, columnName);
             if (column != null)
             {
-               dataTable.Columns.Add(column.Name, column.GetClrType());
+               dataTable.Columns.Add(column.Name, column.GetClrType(false));
             }
          }
          dataTable.AddGeoProcessingMetadata(reader.GeoFileMetadata());
@@ -166,7 +175,7 @@ namespace GISBlox.IO.GeoParquet.Extensions
          foreach (int columnIndex in columnIndexes)
          {
             ColumnDescriptor column = schema.Column(columnIndex);
-            dataTable.Columns.Add(column.Name, column.GetClrType());
+            dataTable.Columns.Add(column.Name, column.GetClrType(false));
          }
          dataTable.AddGeoProcessingMetadata(reader.GeoFileMetadata());
          return dataTable;

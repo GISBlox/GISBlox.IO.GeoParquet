@@ -3,15 +3,13 @@
 ## Introduction
 This library allows you to read and write [GeoParquet files](https://github.com/opengeospatial/geoparquet/) in a simple and efficient way to and from [System.Data.DataTable](https://learn.microsoft.com/en-us/dotnet/api/system.data.datatable?view=net-9.0)s.
 
-It uses [ParquetSharp](https://github.com/G-Research/ParquetSharp) under the hood to read and write data from and to GeoParquet files. 
-
 ## Features
 
-- Read and write GeoParquet metadata.
-- Read a single column, some columns or all columns in GeoParquet files into a `DataTable`.
-- Write a `DataTable` with one or more geometry columns to a GeoParquet file.
+- Reads and writes GeoParquet metadata.
+- Reads a single column, some columns or all columns in GeoParquet files into a `DataTable`.
+- Writes one or more columns in a `DataTable` to a GeoParquet file.
 - Automatically infers the schema of the `GeoParquet` file from the `DataTable` and vice-versa.
-- Support for reading and writing geometries in `WKT` and `WKB` formats.
+- Supports reading and writing geometries in `WKT` and `WKB` formats.
 
 ## Installation
 

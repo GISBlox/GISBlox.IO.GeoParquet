@@ -207,7 +207,10 @@ namespace GISBlox.IO.GeoParquet.Extensions
             DataRow dataRow = table.NewRow();
             for (int colIndex = 0; colIndex < columnData.Length; colIndex++)
             {
-               dataRow[colIndex] = columnData[colIndex][rowIndex];
+               if (columnData[colIndex][rowIndex] != null)
+               {
+                  dataRow[colIndex] = columnData[colIndex][rowIndex];
+               }               
             }
             table.Rows.Add(dataRow);
          }
