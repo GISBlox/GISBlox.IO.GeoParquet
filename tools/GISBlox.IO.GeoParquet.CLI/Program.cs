@@ -1,52 +1,31 @@
-﻿using System.CommandLine;
+﻿using GISBlox.IO.GeoParquet.Common;
+using System.CommandLine;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace GISBlox.IO.GeoParquet.CLI
 {
    internal class Program
    {
-      static async Task<int> Main(string[] args)
+      private static readonly JsonSerializerOptions jsonSerializerOptions = new()
       {
-         // Define the Inspect command
-         var fileOption = new Option<string>("--file", "Input file path")
-         {
-            IsRequired = true
-         };
+         WriteIndented = true,
+         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+      };
 
-         var cmdInspect = new Command("inspect", "Displays the metadata")
+      static async Task<int> Main(string[] args)
+      {         
+         var fileOption = new Argument<string>("file", "Input file path");
+         var rootCommand = new RootCommand
          {
             fileOption
-         };
-
-         cmdInspect.SetHandler((string file) =>
+         }; 
+         rootCommand.Description = "GeoParquet CLI tool";
+         rootCommand.SetHandler((string file) =>
          {
             Inspect(file);
          }, fileOption);
-
-         // Define the Dump command
-         var rowCountOption = new Option<int>("--rows", "Number of rows to display")
-         {
-            IsRequired = false
-         };
-
-         var cmdDump = new Command("dump", "Displays the first few rows of the file")
-         {
-            fileOption,
-            rowCountOption
-         };
-
-         cmdDump.SetHandler((string file, int rowCount) =>
-         {
-            DumpContents(file, rowCount);
-         }, fileOption, rowCountOption);
-
-         var rootCommand = new RootCommand
-            {
-               cmdInspect,
-               cmdDump
-            };
-         rootCommand.Description = "GeoParquet CLI tool";
-
-         // Invoke the command line parser and handle errors
+                  
          try
          {
             return await rootCommand.InvokeAsync(args);
@@ -58,20 +37,50 @@ namespace GISBlox.IO.GeoParquet.CLI
          }
       }
 
-      private static void Inspect(string file)
-      {       
-         Console.WriteLine($"Listing contents of file: {file}");
-       
-      }
+      private static void Inspect(string fileName)
+      {         
+         Console.WriteLine("\r\nGeoParquet CLI");
+         Console.WriteLine($"Version: {typeof(Program).Assembly.GetName().Version}");
 
-      private static void DumpContents(string file, int rowCount)
-      {
-         if (rowCount <= 0)
+         ParquetFileMetadata metadata = GeoParquetReader.ReadFileMetadata(fileName);
+         if (metadata != null)
          {
-            rowCount = 10;
+            using (TableWriter writer = new(padding: 2))
+            {
+               writer.WriteSection("File metadata", ConsoleColor.Yellow);
+
+               writer.StartNameValueTable("Property", "Value", ConsoleColor.Blue, ConsoleColor.Blue);
+
+               writer.WriteNameValueRow("File name", Path.GetFileName(fileName));
+               writer.WriteNameValueRow("Number of row groups", metadata.NumRowGroups);
+               writer.WriteNameValueRow("Number of rows", metadata.NumRows);
+               writer.WriteNameValueRow("Size", metadata.Size);
+               writer.WriteNameValueRow("Version", metadata.Version);
+
+               writer.WriteTable();
+            }
+
+            using (TableWriter writer = new(padding: 2))
+            {
+               writer.WriteSection("Parquet schema", ConsoleColor.Yellow);
+
+               writer.StartNameValueTable("Name", "Type", ConsoleColor.Blue, ConsoleColor.Blue);
+               foreach (var column in metadata.Columns)
+               {
+                  writer.WriteNameValueRow(column.Key, column.Value);
+               }
+               writer.WriteTable();
+            }
          }
-         Console.WriteLine($"Dumping {rowCount} rows from file: {file}");
-       
+
+         GeoFileMetadata? geoMetadata = GeoParquetReader.ReadGeoMetadata(fileName);
+         if (geoMetadata != null)
+         {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("\r\nGeo metadata\r\n");
+            Console.ResetColor();
+            Console.WriteLine(JsonSerializer.Serialize(geoMetadata, jsonSerializerOptions));
+         }
       }
    }
 }
