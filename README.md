@@ -225,7 +225,18 @@ Dictionary<string, GeometryFormat> geoColumns = new()
 GeoParquetWriter.Write(fileName, dataTable, geoColumns, "geometry1");
 ```
 
-:point_right: All these examples, and more, are available in the [Test](/tests/GISBlox.IO.GeoParquet.Tests) project.
+## GeoParquet CLI
+
+The [GeoParquet CLI](/tools/GISBlox.IO.GeoParquet.CLI) is a command-line tool that allows you to read metadata from GeoParquet files. It displays file metadata, the parquet schema and the geo metadata.
+
+Usage:
+```bash
+gp <file>
+```
+
+## Example code
+
+Check out the [Test](/tests/GISBlox.IO.GeoParquet.Tests) project for all examples.
 
 ## Dependencies
 

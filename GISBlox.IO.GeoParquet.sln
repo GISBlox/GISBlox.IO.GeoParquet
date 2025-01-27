@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GISBlox.IO.GeoParquet.CLI", "tools\GISBlox.IO.GeoParquet.CLI\GISBlox.IO.GeoParquet.CLI.csproj", "{1E31BD0C-6BFD-43CA-AB30-B4DF01864CAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{43A017C4-77E0-4C2F-9DC2-3CF91B80E3E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43A017C4-77E0-4C2F-9DC2-3CF91B80E3E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43A017C4-77E0-4C2F-9DC2-3CF91B80E3E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E31BD0C-6BFD-43CA-AB30-B4DF01864CAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E31BD0C-6BFD-43CA-AB30-B4DF01864CAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E31BD0C-6BFD-43CA-AB30-B4DF01864CAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E31BD0C-6BFD-43CA-AB30-B4DF01864CAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
