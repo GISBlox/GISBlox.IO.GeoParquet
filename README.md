@@ -1,7 +1,7 @@
 # GISBlox.IO.GeoParquet
 
 ## Introduction
-This library allows you to read and write [GeoParquet files](https://github.com/opengeospatial/geoparquet/) in a simple and efficient way to and from [System.Data.DataTable](https://learn.microsoft.com/en-us/dotnet/api/system.data.datatable?view=net-9.0)s.
+This library allows you to read and write [GeoParquet files](https://github.com/opengeospatial/geoparquet/) in a simple and efficient way.
 
 ## Features
 
@@ -242,6 +242,8 @@ Check out the [Test](/tests/GISBlox.IO.GeoParquet.Tests) project for all example
 
 - [ParquetSharp 16.1.0](https://github.com/G-Research/ParquetSharp)
 - [NetTopologySuite 2.5.0](https://github.com/NetTopologySuite/NetTopologySuite)
+
+:point_right: ParquetSharp only supplies 64-bit runtimes, which means this library cannot be referenced by a 32-bit project. This also goes for the GISBlox.IO.GeoParquet library!
 
 ## Questions
 
