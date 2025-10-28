@@ -113,7 +113,7 @@ namespace GISBlox.IO.GeoParquet
             ArgumentNullException.ThrowIfNull(dataTable);
             ArgumentNullException.ThrowIfNullOrEmpty(primaryGeoColumn);
 
-            if (geoColumns == null || geoColumns.Count == 0)
+            if (geoColumns == null || geoColumns.Count ==0)
             {
                throw new ArgumentException("At least one geometry column must be specified.");
             }
@@ -131,13 +131,19 @@ namespace GISBlox.IO.GeoParquet
             var columnMetadata = dataTable.ToParquetColumnMetadata();
             var columns = columnMetadata.ToParquetSharpColumns();
 
-            // Write data to the stream column by column
-            using (var writer = new ManagedOutputStream(stream))
+            // Write data to the stream column by column and leave the stream open
+            var writer = new ManagedOutputStream(stream, true);
+            try
             {
                using (var fileWriter = new ParquetFileWriter(writer, [.. columns], keyValueMetadata: geoMetadata))
                {
                   fileWriter.WriteRowGroupData(columnMetadata, dataTable, batchSize);
                }
+            }
+            finally
+            {
+               // Do not dispose the external stream, only the managed wrapper
+               writer.Dispose();
             }
          }
          catch (Exception)
