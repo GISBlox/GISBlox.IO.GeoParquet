@@ -59,8 +59,8 @@ namespace GISBlox.IO.GeoParquet.Utils
       {
          List<GeoColumnMetadata> metadataColumns = [];
 
-         List<DataColumn> wktColumns = _dataTable.GetGeoColumns(GeometryFormat.WKT);
-         List<DataColumn> wkbColumns = _dataTable.GetGeoColumns(GeometryFormat.WKB);
+         List<DataColumn> wktColumns = _dataTable.GetGeoColumnsByFormat(GeometryFormat.WKT);
+         List<DataColumn> wkbColumns = _dataTable.GetGeoColumnsByFormat(GeometryFormat.WKB);
 
          if (wktColumns.Count == 0 && wkbColumns.Count == 0)
          {

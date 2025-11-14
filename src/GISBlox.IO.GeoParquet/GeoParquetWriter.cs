@@ -1,5 +1,4 @@
-﻿using GISBlox.IO.GeoParquet.Common;
-using GISBlox.IO.GeoParquet.Extensions;
+﻿using GISBlox.IO.GeoParquet.Extensions;
 using GISBlox.IO.GeoParquet.Utils;
 using ParquetSharp;
 using ParquetSharp.IO;
@@ -17,14 +16,13 @@ namespace GISBlox.IO.GeoParquet
       /// </summary>
       /// <param name="filePath">The target file path.</param>
       /// <param name="dataTable">A <see cref="DataTable"/> with a single geometry column.</param>
-      /// <param name="geoColumn">The name of the geometry column in the <see cref="DataTable"/>.</param>
-      /// <param name="geoColumnFormat">The current format of the geometry types in the geometry column.</param>
+      /// <param name="geoColumn">The name of the geometry column in the <see cref="DataTable"/>.</param>      
       /// <param name="batchSize">The number of data rows to be processed in a single operation. 
       /// Adjust this parameter according to your system's memory capacity. 
       /// Smaller batches reduce memory pressure but may increase I/O operations.</param>
-      public static void Write(string filePath, DataTable dataTable, string geoColumn, GeometryFormat geoColumnFormat, int batchSize = 65536)
+      public static void Write(string filePath, DataTable dataTable, string geoColumn, int batchSize = 65536)
       {
-         Write(filePath, dataTable, new Dictionary<string, GeometryFormat> { { geoColumn, geoColumnFormat } }, geoColumn, batchSize);
+         Write(filePath, dataTable, [geoColumn], geoColumn, batchSize);
       }
 
       /// <summary>
@@ -32,13 +30,13 @@ namespace GISBlox.IO.GeoParquet
       /// </summary>
       /// <param name="filePath">The target file path.</param>
       /// <param name="dataTable">A <see cref="DataTable"/> with one or more geometry columns.</param>
-      /// <param name="geoColumns">A list of the geometry column names in the <see cref="DataTable"/>, together with their types.</param>
+      /// <param name="geoColumns">A list of the geometry column names in the <see cref="DataTable"/>.</param>
       /// <param name="primaryGeoColumn">The name of the primary geometry column.</param>
       /// <param name="batchSize">The number of data rows to be processed in a single operation. 
       /// Adjust this parameter according to your system's memory capacity. 
       /// Smaller batches reduce memory pressure but may increase I/O operations.</param>
       /// <exception cref="ArgumentException"></exception>
-      public static void Write(string filePath, DataTable dataTable, Dictionary<string, GeometryFormat> geoColumns, string primaryGeoColumn, int batchSize = 65536)
+      public static void Write(string filePath, DataTable dataTable, List<string> geoColumns, string primaryGeoColumn, int batchSize = 65536)
       {
          try
          {
@@ -83,14 +81,13 @@ namespace GISBlox.IO.GeoParquet
       /// </summary>
       /// <param name="stream">The output stream.</param>
       /// <param name="dataTable">A <see cref="DataTable"/> with a single geometry column.</param>
-      /// <param name="geoColumn">The name of the geometry column in the <see cref="DataTable"/>.</param>
-      /// <param name="geoColumnFormat">The current format of the geometry types in the geometry column.</param>
+      /// <param name="geoColumn">The name of the geometry column in the <see cref="DataTable"/>.</param>      
       /// <param name="batchSize">The number of data rows to be processed in a single operation. 
       /// Adjust this parameter according to your system's memory capacity. 
       /// Smaller batches reduce memory pressure but may increase I/O operations.</param>
-      public static void Write(Stream stream, DataTable dataTable, string geoColumn, GeometryFormat geoColumnFormat, int batchSize = 65536)
+      public static void Write(Stream stream, DataTable dataTable, string geoColumn, int batchSize = 65536)
       {
-         Write(stream, dataTable, new Dictionary<string, GeometryFormat> { { geoColumn, geoColumnFormat } }, geoColumn, batchSize);
+         Write(stream, dataTable, [geoColumn], geoColumn, batchSize);
       }
 
       /// <summary>
@@ -98,13 +95,13 @@ namespace GISBlox.IO.GeoParquet
       /// </summary>
       /// <param name="stream">The output stream.</param>
       /// <param name="dataTable">A <see cref="DataTable"/> with one or more geometry columns.</param>
-      /// <param name="geoColumns">A list of the geometry column names in the <see cref="DataTable"/>, together with their types.</param>
+      /// <param name="geoColumns">A list of the geometry column names in the <see cref="DataTable"/>.</param>
       /// <param name="primaryGeoColumn">The name of the primary geometry column.</param>
       /// <param name="batchSize">The number of data rows to be processed in a single operation. 
       /// Adjust this parameter according to your system's memory capacity. 
       /// Smaller batches reduce memory pressure but may increase I/O operations.</param>
       /// <exception cref="ArgumentException"></exception>
-      public static void Write(Stream stream, DataTable dataTable, Dictionary<string, GeometryFormat> geoColumns, string primaryGeoColumn, int batchSize = 65536)
+      public static void Write(Stream stream, DataTable dataTable, List<string> geoColumns, string primaryGeoColumn, int batchSize = 65536)
       {
          try
          {

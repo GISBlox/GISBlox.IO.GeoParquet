@@ -24,7 +24,7 @@ namespace GISBlox.IO.GeoParquet.Tests
          dataTable.Rows.Add(1, "Amsterdam", new byte[] { 1, 1, 0, 0, 0, 255, 178, 123, 242, 176, 144, 19, 64, 87, 236, 47, 187, 39, 47, 74, 64 });
          dataTable.Rows.Add(2, "Rotterdam", new byte[] { 1, 1, 0, 0, 0, 109, 197, 254, 178, 123, 242, 17, 64, 190, 159, 26, 47, 221, 244, 73, 64 });
 
-         GeoParquetWriter.Write(fileName, dataTable, "geometry", GeometryFormat.WKB);
+         GeoParquetWriter.Write(fileName, dataTable, "geometry");
       }
 
       [TestMethod]
@@ -42,7 +42,7 @@ namespace GISBlox.IO.GeoParquet.Tests
          dataTable.Rows.Add(1, "Amsterdam", "POINT (4.8913 52.3684)");
          dataTable.Rows.Add(2, "Rotterdam", "POINT (4.4868 51.913)");
 
-         GeoParquetWriter.Write(fileName, dataTable, "geometry", GeometryFormat.WKT);
+         GeoParquetWriter.Write(fileName, dataTable, "geometry");
       }
 
       [TestMethod]
@@ -61,7 +61,7 @@ namespace GISBlox.IO.GeoParquet.Tests
          dataTable.Rows.Add(2, "Rotterdam", new byte[] { 1, 1, 0, 0, 0, 109, 197, 254, 178, 123, 242, 17, 64, 190, 159, 26, 47, 221, 244, 73, 64 });
 
          using var fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
-         GeoParquetWriter.Write(fileStream, dataTable, "geometry", GeometryFormat.WKB);
+         GeoParquetWriter.Write(fileStream, dataTable, "geometry");
       }
 
       [TestMethod]
@@ -80,7 +80,7 @@ namespace GISBlox.IO.GeoParquet.Tests
          dataTable.Rows.Add(2, "Rotterdam", "POINT (4.4868 51.913)");
 
          using var fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
-         GeoParquetWriter.Write(fileStream, dataTable, "geometry", GeometryFormat.WKT);
+         GeoParquetWriter.Write(fileStream, dataTable, "geometry");
       }
 
       [TestMethod]
@@ -100,7 +100,7 @@ namespace GISBlox.IO.GeoParquet.Tests
             dataTable.Rows.Add(i, $"RND{i}", $"POINT ({i % 100} {i % 100})");
          }
 
-         GeoParquetWriter.Write(fileName, dataTable, "manygeometries", GeometryFormat.WKT, 500000);
+         GeoParquetWriter.Write(fileName, dataTable, "manygeometries", 500000);
       }
 
       [TestMethod]
@@ -121,7 +121,7 @@ namespace GISBlox.IO.GeoParquet.Tests
          }
 
          using var fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
-         GeoParquetWriter.Write(fileStream, dataTable, "manygeometries", GeometryFormat.WKT);
+         GeoParquetWriter.Write(fileStream, dataTable, "manygeometries");
       }
 
       [TestMethod]
@@ -142,7 +142,7 @@ namespace GISBlox.IO.GeoParquet.Tests
          dataTable.Rows.Add(4, "Area", "POLYGON ((4.8913 52.3684, 4.4868 51.9130, 4.2949 52.0641, 4.8913 52.3684))");
          dataTable.Rows.Add(5, "Den Haag", "POINT (4.2949 52.0641)");
 
-         GeoParquetWriter.Write(fileName, dataTable, "geometry", GeometryFormat.WKT);
+         GeoParquetWriter.Write(fileName, dataTable, "geometry");
       }
 
       [TestMethod]
@@ -161,7 +161,7 @@ namespace GISBlox.IO.GeoParquet.Tests
          dataTable.Rows.Add(2, "Rotterdam", "POINT Z(4.4868 51.913 -3.2)");
 
          // Writer does not support 3D geometries, Z values will be ignored
-         GeoParquetWriter.Write(fileName, dataTable, "geometry", GeometryFormat.WKT);
+         GeoParquetWriter.Write(fileName, dataTable, "geometry");
       }
 
       [TestMethod]
@@ -182,11 +182,7 @@ namespace GISBlox.IO.GeoParquet.Tests
          dataTable.Rows.Add(2, "Rotterdam", "POINT (4.4868 51.913)", "Den Haag", "POINT (4.2949 52.0641)");
 
          // Specify geometry columns
-         Dictionary<string, GeometryFormat> geoColumns = new()
-         {
-            { "geometry1", GeometryFormat.WKT },
-            { "geometry2", GeometryFormat.WKT }
-         };
+         List<string> geoColumns = ["geometry1", "geometry2"];
 
          GeoParquetWriter.Write(fileName, dataTable, geoColumns, "geometry1");
       }
@@ -203,7 +199,7 @@ namespace GISBlox.IO.GeoParquet.Tests
          dataTable.Columns.Add("geometry", typeof(string));
 
          // No rows added
-         GeoParquetWriter.Write(fileName, dataTable, "geometry", GeometryFormat.WKT);
+         GeoParquetWriter.Write(fileName, dataTable, "geometry");
       }
 
       [TestMethod]
@@ -221,7 +217,7 @@ namespace GISBlox.IO.GeoParquet.Tests
          dataTable.Rows.Add(1, "Utrecht", null);
          dataTable.Rows.Add(2, "Rotterdam", new byte[] { 1, 1, 0, 0, 0, 109, 197, 254, 178, 123, 242, 17, 64, 190, 159, 26, 47, 221, 244, 73, 64 });
 
-         GeoParquetWriter.Write(fileName, dataTable, "geometry", GeometryFormat.WKB);
+         GeoParquetWriter.Write(fileName, dataTable, "geometry");
       }
 
       [TestMethod]
@@ -239,7 +235,7 @@ namespace GISBlox.IO.GeoParquet.Tests
          dataTable.Rows.Add(1, "Utrecht", null);
          dataTable.Rows.Add(2, "Den Haag", "POINT(4.2949 52.0641)");
 
-         GeoParquetWriter.Write(fileName, dataTable, "geometry", GeometryFormat.WKT);
+         GeoParquetWriter.Write(fileName, dataTable, "geometry");
       }
 
       [TestMethod]
@@ -259,11 +255,7 @@ namespace GISBlox.IO.GeoParquet.Tests
          dataTable.Rows.Add(2, "Rotterdam", "POINT (4.4868 51.913)", new byte[] { 1, 1, 0, 0, 0, 109, 197, 254, 178, 123, 242, 17, 64, 190, 159, 26, 47, 221, 244, 73, 64 });
 
          // Specify geometry columns
-         Dictionary<string, GeometryFormat> geoColumns = new()
-          {
-              { "geometry_wkt", GeometryFormat.WKT },
-              { "geometry_wkb", GeometryFormat.WKB }
-          };
+         List<string> geoColumns = ["geometry_wkt", "geometry_wkb"];
 
          // Writer does not support mixed geometry formats
          Assert.ThrowsException<GeometryException>(() =>

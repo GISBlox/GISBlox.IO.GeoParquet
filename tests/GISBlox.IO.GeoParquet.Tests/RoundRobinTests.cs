@@ -26,7 +26,7 @@ namespace GISBlox.IO.GeoParquet.Tests
          source.Rows.Add(3, "Den Haag", "POINT (4.2949 52.0641)");
 
          // Write to file
-         GeoParquetWriter.Write(fileName, source, "geometry", GeometryFormat.WKT);
+         GeoParquetWriter.Write(fileName, source, "geometry");
 
          // Read from file
          Assert.IsTrue(File.Exists(fileName));
@@ -36,8 +36,11 @@ namespace GISBlox.IO.GeoParquet.Tests
          Assert.IsTrue(target.Columns.Count == 3);
          Assert.IsTrue(target.Rows.Count == 3);
 
+         Assert.IsNotNull(target.Columns["id"]);
          Assert.IsTrue(target.Columns["id"]?.DataType == typeof(int));
+         Assert.IsNotNull(target.Columns["name"]);
          Assert.IsTrue(target.Columns["name"]?.DataType == typeof(string));
+         Assert.IsNotNull(target.Columns["geometry"]);
          Assert.IsTrue(target.Columns["geometry"]?.DataType == typeof(string));
 
          // Sample rows
@@ -72,7 +75,7 @@ namespace GISBlox.IO.GeoParquet.Tests
          }
 
          // Write to file
-         GeoParquetWriter.Write(fileName, source, "manygeometries", GeometryFormat.WKT);
+         GeoParquetWriter.Write(fileName, source, "manygeometries");
 
          // Read from file
          Assert.IsTrue(File.Exists(fileName));
@@ -82,8 +85,11 @@ namespace GISBlox.IO.GeoParquet.Tests
          Assert.IsTrue(target.Columns.Count == 3);
          Assert.IsTrue(target.Rows.Count == 1000000);
 
+         Assert.IsNotNull(target.Columns["id"]);
          Assert.IsTrue(target.Columns["id"]?.DataType == typeof(int));
+         Assert.IsNotNull(target.Columns["name"]);
          Assert.IsTrue(target.Columns["name"]?.DataType == typeof(string));
+         Assert.IsNotNull(target.Columns["manygeometries"]);
          Assert.IsTrue(target.Columns["manygeometries"]?.DataType == typeof(string));
 
          // Sample rows
@@ -114,7 +120,7 @@ namespace GISBlox.IO.GeoParquet.Tests
          source.Rows.Add(5, "Den Haag", "POINT (4.2949 52.0641)");
 
          // Write to file
-         GeoParquetWriter.Write(fileName, source, "geometry", GeometryFormat.WKT);
+         GeoParquetWriter.Write(fileName, source, "geometry");
 
          // Read from file
          Assert.IsTrue(File.Exists(fileName));
@@ -124,8 +130,11 @@ namespace GISBlox.IO.GeoParquet.Tests
          Assert.IsTrue(target.Columns.Count == 3);
          Assert.IsTrue(target.Rows.Count == 5);
 
+         Assert.IsNotNull(target.Columns["id"]);
          Assert.IsTrue(target.Columns["id"]?.DataType == typeof(int));
+         Assert.IsNotNull(target.Columns["name"]);
          Assert.IsTrue(target.Columns["name"]?.DataType == typeof(string));
+         Assert.IsNotNull(target.Columns["geometry"]);
          Assert.IsTrue(target.Columns["geometry"]?.DataType == typeof(string));
 
          // Sample rows
@@ -167,7 +176,7 @@ namespace GISBlox.IO.GeoParquet.Tests
          source.Rows.Add(3, "Den Haag", "POINT (4.2949 52.0641)");
 
          // Write to file
-         GeoParquetWriter.Write(fileName, source, "geometry", GeometryFormat.WKT);
+         GeoParquetWriter.Write(fileName, source, "geometry");
 
          // Read from file
          Assert.IsTrue(File.Exists(fileName));
@@ -177,8 +186,11 @@ namespace GISBlox.IO.GeoParquet.Tests
          Assert.IsTrue(target.Columns.Count == 3);
          Assert.IsTrue(target.Rows.Count == 3);
 
+         Assert.IsNotNull(target.Columns["id"]);
          Assert.IsTrue(target.Columns["id"]?.DataType == typeof(int));
+         Assert.IsNotNull(target.Columns["name"]);
          Assert.IsTrue(target.Columns["name"]?.DataType == typeof(string));
+         Assert.IsNotNull(target.Columns["geometry"]);
          Assert.IsTrue(target.Columns["geometry"]?.DataType == typeof(string));
 
          // Sample rows

@@ -69,10 +69,7 @@ namespace GISBlox.IO.GeoParquet
 
             using (var fileReader = new ParquetFileReader(filePath))
             {
-               GeoFileMetadata? metadata = fileReader.GeoFileMetadata();
-               return metadata == null
-                  ? throw new InvalidDataException($"The file '{filePath}' is not a GeoParquet file.")
-                  : fileReader.GeoFileMetadata();
+               return fileReader.GeoFileMetadata() ?? throw new InvalidDataException($"The file '{filePath}' is not a GeoParquet file.");
             }
          }
          catch (Exception)

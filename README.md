@@ -116,16 +116,16 @@ dataTable.Columns.Add("geometry", typeof(string));
 dataTable.Rows.Add(1, "Amsterdam", "POINT (4.8913 52.3684)");
 dataTable.Rows.Add(2, "Rotterdam", "POINT (4.4868 51.913)");
 
-GeoParquetWriter.Write(fileName, dataTable, "geometry", GeometryFormat.WKT);
+GeoParquetWriter.Write(fileName, dataTable, "geometry");
 ```
 
-The `geometryColumn` parameter specifies the name of the geometry column in the `DataTable`. The `format` parameter specifies the format of the geometries in the `DataTable`. The supported formats are `WKT` (Well-Known Text) and `WKB` (Well-Known Binary).
+The `geometryColumn` parameter specifies the name of the geometry column in the `DataTable`.
 
 The GeoParquetWriter supports writing to either a file or a [System.IO.Stream](https://learn.microsoft.com/en-us/dotnet/api/system.io.stream?view=net-9.0). The following sample shows how to write to a stream:
 ```csharp
 // Continuing from the previous example...
 using var fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
-GeoParquetWriter.Write(fileStream, dataTable, "geometry", GeometryFormat.WKT);
+GeoParquetWriter.Write(fileStream, dataTable, "geometry");
 ```
 
 ### Write WKB geometries
@@ -144,7 +144,7 @@ dataTable.Columns.Add("geometry", typeof(byte[]));
 dataTable.Rows.Add(1, "Amsterdam", new byte[] { 1, 1, 0, 0, 0, 255, 178, 123, 242, 176, 144, 19, 64, 87, 236, 47, 187, 39, 47, 74, 64 });
 dataTable.Rows.Add(2, "Rotterdam", new byte[] { 1, 1, 0, 0, 0, 109, 197, 254, 178, 123, 242, 17, 64, 190, 159, 26, 47, 221, 244, 73, 64 });
 
-GeoParquetWriter.Write(fileName, dataTable, "geometry", GeometryFormat.WKB);
+GeoParquetWriter.Write(fileName, dataTable, "geometry");
 ```
 
 ### Write multiple geometry types
@@ -166,7 +166,7 @@ dataTable.Rows.Add(3, "Connection", "LINESTRING (4.8913 52.3684, 4.4868 51.9130,
 dataTable.Rows.Add(4, "Area", "POLYGON ((4.8913 52.3684, 4.4868 51.9130, 4.2949 52.0641, 4.8913 52.3684))");
 dataTable.Rows.Add(5, "Den Haag", "POINT (4.2949 52.0641)");
 
-GeoParquetWriter.Write(fileName, dataTable, "geometry", GeometryFormat.WKT);
+GeoParquetWriter.Write(fileName, dataTable, "geometry");
 ```
 
 Inspecting the geo metadata of the new file will show that the geometries are stored in the `geometry` column with the correct geometry types:
@@ -216,11 +216,7 @@ dataTable.Rows.Add(1, "Amsterdam", "POINT (4.8913 52.3684)", "Utrecht", "POINT (
 dataTable.Rows.Add(2, "Rotterdam", "POINT (4.4868 51.913)", "Den Haag", "POINT (4.2949 52.0641)");
 
 // Specify geometry columns
-Dictionary<string, GeometryFormat> geoColumns = new()
-{
-   { "geometry1", GeometryFormat.WKT },
-   { "geometry2", GeometryFormat.WKT }
-};
+List<string> geoColumns = ["geometry1", "geometry2"];
 
 GeoParquetWriter.Write(fileName, dataTable, geoColumns, "geometry1");
 ```
@@ -240,8 +236,8 @@ Check out the [Test](/tests/GISBlox.IO.GeoParquet.Tests) project for all example
 
 ## Dependencies
 
-- [ParquetSharp 16.1.0](https://github.com/G-Research/ParquetSharp)
-- [NetTopologySuite 2.5.0](https://github.com/NetTopologySuite/NetTopologySuite)
+- [ParquetSharp 21.0.0](https://github.com/G-Research/ParquetSharp)
+- [NetTopologySuite 2.6.0](https://github.com/NetTopologySuite/NetTopologySuite)
 
 :point_right: ParquetSharp only supplies 64-bit runtimes, which means this library cannot be referenced by a 32-bit project. This also goes for the GISBlox.IO.GeoParquet library!
 

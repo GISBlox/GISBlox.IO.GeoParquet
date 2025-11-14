@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>GISBlox.IO.GeoParquet</PackageId>
@@ -9,7 +9,7 @@
     <AssemblyName>GISBlox.IO.GeoParquet</AssemblyName>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>False</SignAssembly>
-    <Version>1.0.3</Version>
+    <Version>1.1.0</Version>
     <Description>This library provides .NET support for reading and writing GeoParquet files.</Description>
     <Authors>Karlo Bartels</Authors>
     <Company>Bartels Online</Company>
@@ -39,8 +39,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NetTopologySuite" Version="2.5.0" />
-    <PackageReference Include="ParquetSharp" Version="16.1.0" />
+    <PackageReference Include="NetTopologySuite" Version="2.6.0" />
+    <PackageReference Include="ParquetSharp" Version="21.0.0" />
   </ItemGroup>
 
 </Project>
