@@ -23,7 +23,7 @@ namespace GISBlox.IO.GeoParquet.Utils
          var wkbReader = new WKBReader();
          var wktWriter = new WKTWriter();
 
-         var wkbColumns = _dataTable.GetGeoColumns(GeometryFormat.WKB);
+         var wkbColumns = _dataTable.GetGeoColumnsByFormat(GeometryFormat.WKB);
 
          foreach (DataColumn wkbColumn in wkbColumns)
          {

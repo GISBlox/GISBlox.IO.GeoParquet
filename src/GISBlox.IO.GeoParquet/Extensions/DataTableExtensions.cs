@@ -9,16 +9,21 @@ namespace GISBlox.IO.GeoParquet.Extensions
       /// Adds processing metadata to the geometry columns in a <see cref="DataTable"/>
       /// </summary>
       /// <param name="table">A <see cref="DataTable"/>.</param>
-      /// <param name="geoColumns">A Dictionary with the names and types of the geo columns in the <see cref="DataTable"/>.</param>
+      /// <param name="geoColumns">A List with the names of the geo columns in the <see cref="DataTable"/>.</param>
       /// <param name="primaryGeoColumn">The name of the primary geo column.</param>
-      /// <exception cref="Exception"></exception>
-      public static void AddGeoProcessingMetadata(this DataTable table, Dictionary<string, GeometryFormat> geoColumns, string primaryGeoColumn)
+      /// <exception cref="Exception">Thrown when a geo column does not exist in the data table.</exception>
+      public static void AddGeoProcessingMetadata(this DataTable table, List<string> geoColumns, string primaryGeoColumn)
       {
          foreach (var geoColumn in geoColumns)
          {
-            DataColumn? col = table.Columns[geoColumn.Key] ?? throw new Exception($"Column '{geoColumn.Key}' does not exist in the data table.");
+            DataColumn? col = table.Columns[geoColumn] ?? throw new Exception($"Column '{geoColumn}' does not exist in the data table.");
+            GeometryFormat geoFormat = PeekGeoColumnFormat(table, col);
+
+            if (geoFormat == GeometryFormat.Unknown) 
+               throw new Exception($"The geometry format of column '{geoColumn}' could not be determined.");
+
             col.ExtendedProperties.Add("is_geo_column", true);
-            col.ExtendedProperties.Add("geo_format", geoColumn.Value);
+            col.ExtendedProperties.Add("geo_format", geoFormat);
 
             if (col.ColumnName.Equals(primaryGeoColumn))
             {
@@ -34,19 +39,21 @@ namespace GISBlox.IO.GeoParquet.Extensions
       /// <param name="geoFileMetadata">A <see cref="GeoFileMetadata"/> type.</param>
       public static void AddGeoProcessingMetadata(this DataTable table, GeoFileMetadata? geoFileMetadata)
       {
-         string? primaryGeoColumn;
-         Dictionary<string, GeometryFormat> geoColumns = [];         
          if (geoFileMetadata != null)
          {
-            primaryGeoColumn = geoFileMetadata.Primary_column;
+            List<string> geoColumns = [];
+
+            // Get geo columns from metadata instead of the table itself            
             foreach (var geoColumn in geoFileMetadata.Columns)
             {
                if (table.Columns.Contains(geoColumn.Key))
                {
-                  geoColumns.Add(geoColumn.Key, Enum.Parse<GeometryFormat>(geoColumn.Value.Encoding));
+                  geoColumns.Add(geoColumn.Key);                  
                }
             }
-            table.AddGeoProcessingMetadata(geoColumns, !string.IsNullOrEmpty(primaryGeoColumn) ? primaryGeoColumn : string.Empty);
+
+            // Add geo processing metadata
+            table.AddGeoProcessingMetadata(geoColumns, geoFileMetadata.Primary_column ?? string.Empty);
          }
       }
 
@@ -80,17 +87,7 @@ namespace GISBlox.IO.GeoParquet.Extensions
          col.SetGeoFormat(format);
          col.ExtendedProperties.Add("is_geo_column", true);
          return col;
-      }
-
-      /// <summary>
-      /// Returns the format of the geometries in a <see cref="DataColumn"/>.
-      /// </summary>
-      /// <param name="column">A <see cref="DataColumn"/>.</param>
-      /// <returns>The <see cref="GeometryFormat"/> of the column's geometries.</returns>
-      public static GeometryFormat GetGeoFormat(this DataColumn column)
-      {
-         return column.ExtendedProperties["geo_format"] as GeometryFormat? ?? GeometryFormat.Unknown;
-      }
+      }      
 
       /// <summary>
       /// Set the format of the geometries in a <see cref="DataColumn"/>.
@@ -115,7 +112,7 @@ namespace GISBlox.IO.GeoParquet.Extensions
       /// <param name="table">A <see cref="DataTable"/>.</param>
       /// <param name="format">The required <see cref="GeometryFormat"/>.</param>
       /// <returns>A List with geometry <see cref="DataColumn"/> types of the specified <see cref="GeometryFormat"/>.</returns>
-      public static List<DataColumn> GetGeoColumns(this DataTable table, GeometryFormat format)
+      public static List<DataColumn> GetGeoColumnsByFormat(this DataTable table, GeometryFormat format)
       {
          List<DataColumn> columns = [];
          foreach (DataColumn column in table.Columns)
@@ -129,6 +126,68 @@ namespace GISBlox.IO.GeoParquet.Extensions
             }
          }
          return columns;
+      }
+
+      /// <summary>
+      /// Returns the format of the geometries in a <see cref="DataColumn"/>.
+      /// </summary>
+      /// <param name="column">A <see cref="DataColumn"/>.</param>
+      /// <returns>The <see cref="GeometryFormat"/> of the column's geometries.</returns>
+      public static GeometryFormat GetGeoFormat(this DataColumn column)
+      {
+         if (column.ExtendedProperties.ContainsKey("geo_format") && column.ExtendedProperties["geo_format"] != null)
+         {
+            var geoFormatObj = column.ExtendedProperties["geo_format"];
+            if (geoFormatObj is GeometryFormat format)
+            {
+               return format;
+            }
+            else
+            {
+               var geoFormatStr = geoFormatObj?.ToString();
+               if (!string.IsNullOrEmpty(geoFormatStr))
+               {
+                  return Enum.Parse<GeometryFormat>(geoFormatStr);
+               }
+            }
+         }
+         return GeometryFormat.Unknown;
+      }
+
+      /// <summary>
+      /// Determines the geometry format of a <see cref="DataColumn"/> in a <see cref="DataTable"/>.
+      /// </summary>
+      /// <param name="table">A <see cref="DataTable"/>.</param>
+      /// <param name="column">A <see cref="DataColumn"/> in the <paramref name="table"/>.</param>
+      /// <returns>The <see cref="GeometryFormat"/> of the column.</returns>      
+      public static GeometryFormat PeekGeoColumnFormat(this DataTable table, DataColumn column)
+      {
+         // Read the column value of the first non-null row to determine the format
+         GeometryFormat format = GeometryFormat.Unknown;
+         
+         if (table.Rows.Count == 0)
+         {            
+            // Default to WKB for empty tables, as we write WKB only (WKT gets converted to WKB on write in MetadataBuilder)
+            return GeometryFormat.WKB;
+         }           
+
+         foreach (DataRow row in table.Rows)
+         {
+            if (row[column] != DBNull.Value)
+            {
+               if (row[column] is byte[])
+               {
+                  format = GeometryFormat.WKB;
+                  break;
+               }
+               else if (row[column] is string)
+               {
+                  format = GeometryFormat.WKT;
+                  break;
+               }
+            }            
+         }
+         return format;
       }
 
       /// <summary>
