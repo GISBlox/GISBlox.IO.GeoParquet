@@ -227,7 +227,7 @@ The [GeoParquet CLI](/tools/GISBlox.IO.GeoParquet.CLI) is a command-line tool th
 
 Usage:
 ```bash
-gp <file>
+gp --file path/to/file.parquet
 ```
 
 ## Example code
@@ -236,7 +236,7 @@ Check out the [Test](/tests/GISBlox.IO.GeoParquet.Tests) project for all example
 
 ## Dependencies
 
-- [ParquetSharp 21.0.0](https://github.com/G-Research/ParquetSharp)
+- [ParquetSharp 23.0.0.2](https://github.com/G-Research/ParquetSharp)
 - [NetTopologySuite 2.6.0](https://github.com/NetTopologySuite/NetTopologySuite)
 
 :point_right: ParquetSharp only supplies 64-bit runtimes, which means this library cannot be referenced by a 32-bit project. This also goes for the GISBlox.IO.GeoParquet library!

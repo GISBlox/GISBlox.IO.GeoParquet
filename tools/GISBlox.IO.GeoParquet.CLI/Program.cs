@@ -1,5 +1,6 @@
 ﻿using GISBlox.IO.GeoParquet.Common;
 using System.CommandLine;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -14,34 +15,45 @@ namespace GISBlox.IO.GeoParquet.CLI
       };
 
       static async Task<int> Main(string[] args)
-      {         
-         var fileOption = new Argument<string>("file", "Input file path");
-         var rootCommand = new RootCommand
+      {
+         RootCommand rootCommand = new("GeoParquet CLI tool");
+
+         Option<string> fileOption = new("--file", "-f")
          {
-            fileOption
-         }; 
-         rootCommand.Description = "GeoParquet CLI tool";
-         rootCommand.SetHandler((string file) =>
+            Description = "The file path to the GeoParquet file.",
+            Required = true
+         };
+
+         rootCommand.Options.Add(fileOption);
+         rootCommand.SetAction(parseResult =>
          {
-            Inspect(file);
-         }, fileOption);
-                  
+            string? file = parseResult.GetValue(fileOption);            
+            Inspect(file);                    
+         });
+
          try
          {
-            return await rootCommand.InvokeAsync(args);
+            return rootCommand.Parse(args).Invoke();
          }
          catch (Exception ex)
          {
             Console.Error.WriteLine($"Error: {ex.Message}");
             return 1;
-         }
+         }         
       }
 
-      private static void Inspect(string fileName)
-      {         
+      private static void Inspect(string? fileName)
+      {
          Console.WriteLine("\r\nGeoParquet CLI");
+         Console.WriteLine(typeof(Program).Assembly.GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright);
          Console.WriteLine($"Version: {typeof(Program).Assembly.GetName().Version}");
 
+         if (string.IsNullOrEmpty(fileName))
+         {
+            Console.Error.WriteLine("Error: No file specified. Use --file option to specify the GeoParquet file.");
+            return;
+         }
+         
          ParquetFileMetadata metadata = GeoParquetReader.ReadFileMetadata(fileName);
          if (metadata != null)
          {

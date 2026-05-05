@@ -99,7 +99,7 @@ namespace GISBlox.IO.GeoParquet.Common
          }
 
          // Write the column values to the Parquet file
-         _writer.WriteBatch([..values]);         
+         _writer.WriteBatch(values.ToArray()!);         
       }
 
       /// <summary>
