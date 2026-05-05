@@ -33,15 +33,15 @@ namespace GISBlox.IO.GeoParquet.Tests
          DataTable target = GeoParquetReader.ReadAll(fileName, GeometryFormat.WKT);
 
          // Validate
-         Assert.IsTrue(target.Columns.Count == 3);
-         Assert.IsTrue(target.Rows.Count == 3);
+         Assert.HasCount(3, target.Columns);
+         Assert.HasCount(3, target.Rows);
 
          Assert.IsNotNull(target.Columns["id"]);
-         Assert.IsTrue(target.Columns["id"]?.DataType == typeof(int));
+         Assert.AreEqual(typeof(int), target.Columns["id"]?.DataType);
          Assert.IsNotNull(target.Columns["name"]);
-         Assert.IsTrue(target.Columns["name"]?.DataType == typeof(string));
+         Assert.AreEqual(typeof(string), target.Columns["name"]?.DataType);
          Assert.IsNotNull(target.Columns["geometry"]);
-         Assert.IsTrue(target.Columns["geometry"]?.DataType == typeof(string));
+         Assert.AreEqual(typeof(string), target.Columns["geometry"]?.DataType);
 
          // Sample rows
          Assert.IsTrue(target.Rows[0]["id"].Equals(1));
@@ -82,15 +82,15 @@ namespace GISBlox.IO.GeoParquet.Tests
          DataTable target = GeoParquetReader.ReadAll(fileName, GeometryFormat.WKT);
 
          // Validate         
-         Assert.IsTrue(target.Columns.Count == 3);
-         Assert.IsTrue(target.Rows.Count == 1000000);
+         Assert.HasCount(3, target.Columns);
+         Assert.HasCount(1000000, target.Rows);
 
          Assert.IsNotNull(target.Columns["id"]);
-         Assert.IsTrue(target.Columns["id"]?.DataType == typeof(int));
+         Assert.AreEqual(typeof(int), target.Columns["id"]?.DataType);
          Assert.IsNotNull(target.Columns["name"]);
-         Assert.IsTrue(target.Columns["name"]?.DataType == typeof(string));
+         Assert.AreEqual(typeof(string), target.Columns["name"]?.DataType);
          Assert.IsNotNull(target.Columns["manygeometries"]);
-         Assert.IsTrue(target.Columns["manygeometries"]?.DataType == typeof(string));
+         Assert.AreEqual(typeof(string), target.Columns["manygeometries"]?.DataType);
 
          // Sample rows
          for (int i = 0; i < 1000000; i++)
@@ -127,15 +127,15 @@ namespace GISBlox.IO.GeoParquet.Tests
          DataTable target = GeoParquetReader.ReadAll(fileName, GeometryFormat.WKT);
 
          // Validate         
-         Assert.IsTrue(target.Columns.Count == 3);
-         Assert.IsTrue(target.Rows.Count == 5);
+         Assert.HasCount(3, target.Columns);
+         Assert.HasCount(5, target.Rows);
 
          Assert.IsNotNull(target.Columns["id"]);
-         Assert.IsTrue(target.Columns["id"]?.DataType == typeof(int));
+         Assert.AreEqual(typeof(int), target.Columns["id"]?.DataType);
          Assert.IsNotNull(target.Columns["name"]);
-         Assert.IsTrue(target.Columns["name"]?.DataType == typeof(string));
+         Assert.AreEqual(typeof(string), target.Columns["name"]?.DataType);
          Assert.IsNotNull(target.Columns["geometry"]);
-         Assert.IsTrue(target.Columns["geometry"]?.DataType == typeof(string));
+         Assert.AreEqual(typeof(string), target.Columns["geometry"]?.DataType);
 
          // Sample rows
          Assert.IsTrue(target.Rows[0]["id"].Equals(1));
@@ -183,15 +183,15 @@ namespace GISBlox.IO.GeoParquet.Tests
          DataTable target = GeoParquetReader.ReadAll(fileName, GeometryFormat.WKT);
 
          // Validate
-         Assert.IsTrue(target.Columns.Count == 3);
-         Assert.IsTrue(target.Rows.Count == 3);
+         Assert.HasCount(3, target.Columns);
+         Assert.HasCount(3, target.Rows);
 
          Assert.IsNotNull(target.Columns["id"]);
-         Assert.IsTrue(target.Columns["id"]?.DataType == typeof(int));
+         Assert.AreEqual(typeof(int), target.Columns["id"]?.DataType);
          Assert.IsNotNull(target.Columns["name"]);
-         Assert.IsTrue(target.Columns["name"]?.DataType == typeof(string));
+         Assert.AreEqual(typeof(string), target.Columns["name"]?.DataType);
          Assert.IsNotNull(target.Columns["geometry"]);
-         Assert.IsTrue(target.Columns["geometry"]?.DataType == typeof(string));
+         Assert.AreEqual(typeof(string), target.Columns["geometry"]?.DataType);
 
          // Sample rows
          Assert.IsTrue(target.Rows[0]["id"].Equals(1));

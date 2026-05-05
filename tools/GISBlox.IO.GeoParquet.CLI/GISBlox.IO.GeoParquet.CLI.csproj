@@ -6,10 +6,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyName>gp</AssemblyName>
+    <Version>1.1.1</Version>
+    <Authors>Karlo Bartels</Authors>
+    <Company>Bartels Online</Company>
+    <Copyright>Copyright (c) $([System.DateTime]::UtcNow.Year) $(Company)</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    <PackageReference Include="System.CommandLine" Version="2.0.7" />
   </ItemGroup>
 
   <ItemGroup>

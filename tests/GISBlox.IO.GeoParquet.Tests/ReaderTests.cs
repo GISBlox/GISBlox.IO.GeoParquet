@@ -16,9 +16,9 @@ namespace GISBlox.IO.GeoParquet.Tests
 
          ParquetFileMetadata metadata = GeoParquetReader.ReadFileMetadata(fileName);
 
-         Assert.IsTrue(metadata.NumRowGroups == 1);
-         Assert.IsTrue(metadata.NumRows == 2);
-         Assert.IsTrue(metadata.Columns.Count == 3);
+         Assert.AreEqual(1, metadata.NumRowGroups);
+         Assert.AreEqual(2, metadata.NumRows);
+         Assert.HasCount(3, metadata.Columns);
       }
 
       [TestMethod]
@@ -30,15 +30,15 @@ namespace GISBlox.IO.GeoParquet.Tests
 
          Assert.IsNotNull(metadata, "Metadata is null");
 
-         Assert.IsTrue(metadata.Version == "1.1.0");
-         Assert.IsTrue(metadata.Columns.Count == 1);
-         Assert.IsTrue(metadata.Primary_column == "geometry");
-         Assert.IsTrue(metadata.Columns["geometry"].Encoding == "WKB");
+         Assert.AreEqual("1.1.0", metadata.Version);
+         Assert.HasCount(1, metadata.Columns);
+         Assert.AreEqual("geometry", metadata.Primary_column);
+         Assert.AreEqual("WKB", metadata.Columns["geometry"].Encoding);
 
          Assert.IsNotNull(metadata.Columns["geometry"].GeometryTypes);
          ICollection<string>? geometryTypes = metadata.Columns["geometry"].GeometryTypes;
          Assert.IsNotNull(geometryTypes);
-         Assert.IsTrue(geometryTypes.SingleOrDefault(x => x == "Point") != null);
+         Assert.IsNotNull(geometryTypes.SingleOrDefault(x => x == "Point"));
       }
 
       [TestMethod]
@@ -48,8 +48,8 @@ namespace GISBlox.IO.GeoParquet.Tests
 
          DataTable dataTable = GeoParquetReader.ReadAll(fileName, GeometryFormat.WKB, 1000);
 
-         Assert.IsTrue(dataTable.Columns.Count == 3);
-         Assert.IsTrue(dataTable.Columns[2].DataType == typeof(byte[]));
+         Assert.HasCount(3, dataTable.Columns);
+         Assert.AreEqual(typeof(byte[]), dataTable.Columns[2].DataType);
 
          Assert.IsTrue(HasGeoFormat(dataTable.Columns[2], GeometryFormat.WKB));
       }
@@ -61,8 +61,8 @@ namespace GISBlox.IO.GeoParquet.Tests
 
          DataTable dataTable = GeoParquetReader.ReadAll(fileName, GeometryFormat.WKT, 1000);
 
-         Assert.IsTrue(dataTable.Columns.Count == 3);
-         Assert.IsTrue(dataTable.Columns[2].DataType == typeof(string));
+         Assert.HasCount(3, dataTable.Columns);
+         Assert.AreEqual(typeof(string), dataTable.Columns[2].DataType);
 
          Assert.IsTrue(HasGeoFormat(dataTable.Columns[2], GeometryFormat.WKT));
       }
@@ -74,8 +74,8 @@ namespace GISBlox.IO.GeoParquet.Tests
 
          DataTable dataTable = GeoParquetReader.ReadAll(fileName, GeometryFormat.WKB);
 
-         Assert.IsTrue(dataTable.Columns.Count == 3);
-         Assert.IsTrue(dataTable.Rows.Count == 1000000);
+         Assert.HasCount(3, dataTable.Columns);
+         Assert.HasCount(1000000, dataTable.Rows);
       }
 
       [TestMethod]
@@ -85,8 +85,8 @@ namespace GISBlox.IO.GeoParquet.Tests
 
          DataTable dataTable = GeoParquetReader.ReadAll(fileName, GeometryFormat.WKT);
 
-         Assert.IsTrue(dataTable.Columns.Count == 3);
-         Assert.IsTrue(dataTable.Rows.Count == 1000000);
+         Assert.HasCount(3, dataTable.Columns);
+         Assert.HasCount(1000000, dataTable.Rows);
       }
 
       [TestMethod]
@@ -96,9 +96,9 @@ namespace GISBlox.IO.GeoParquet.Tests
 
          DataTable dataTable = GeoParquetReader.ReadColumn(fileName, "geometry", GeometryFormat.WKB);
 
-         Assert.IsTrue(dataTable.Columns.Count == 1);
-         Assert.IsTrue(dataTable.Columns[0].ColumnName == "geometry");
-         Assert.IsTrue(dataTable.Columns[0].DataType == typeof(byte[]));
+         Assert.HasCount(1, dataTable.Columns);
+         Assert.AreEqual("geometry", dataTable.Columns[0].ColumnName);
+         Assert.AreEqual(typeof(byte[]), dataTable.Columns[0].DataType);
 
          // Is the 'geometry' column a valid geometry column that contains WKB geometries?
          Assert.IsTrue(dataTable.Columns[0].ExtendedProperties.ContainsKey("is_geo_column"));
@@ -117,9 +117,9 @@ namespace GISBlox.IO.GeoParquet.Tests
 
          DataTable dataTable = GeoParquetReader.ReadColumns(fileName, columnNames, GeometryFormat.WKB);
 
-         Assert.IsTrue(dataTable.Columns.Count == 2);
-         Assert.IsTrue(dataTable.Columns[0].ColumnName == "name");
-         Assert.IsTrue(dataTable.Columns[1].ColumnName == "geometry");
+         Assert.HasCount(2, dataTable.Columns);
+         Assert.AreEqual("name", dataTable.Columns[0].ColumnName);
+         Assert.AreEqual("geometry", dataTable.Columns[1].ColumnName);
 
          // Is the 'geometry' column a valid geometry column that contains WKB geometries?
          Assert.IsTrue(dataTable.Columns[1].ExtendedProperties.ContainsKey("is_geo_column"));
@@ -139,8 +139,8 @@ namespace GISBlox.IO.GeoParquet.Tests
 
          DataTable dataTable = GeoParquetReader.ReadColumn(fileName, columnIndex, GeometryFormat.WKB);
 
-         Assert.IsTrue(dataTable.Columns.Count == 1);
-         Assert.IsTrue(dataTable.Columns[0].ColumnName == "name");
+         Assert.HasCount(1, dataTable.Columns);
+         Assert.AreEqual("name", dataTable.Columns[0].ColumnName);
 
          // Is the 'name' column a valid geometry column?
          Assert.IsFalse(dataTable.Columns[0].ExtendedProperties.ContainsKey("is_geo_column"));
@@ -158,14 +158,14 @@ namespace GISBlox.IO.GeoParquet.Tests
 
          DataTable dataTable = GeoParquetReader.ReadColumns(fileName, columnIndexes, GeometryFormat.WKB);
 
-         Assert.IsTrue(dataTable.Columns.Count == 2);
-         Assert.IsTrue(dataTable.Columns[0].ColumnName == "name");
+         Assert.HasCount(2, dataTable.Columns);
+         Assert.AreEqual("name", dataTable.Columns[0].ColumnName);
 
          // Is the 'name' column a valid geometry column?
          Assert.IsFalse(dataTable.Columns[0].ExtendedProperties.ContainsKey("is_geo_column"));
 
          // Is the 'geometry' column a valid geometry column that contains WKB geometries?
-         Assert.IsTrue(dataTable.Columns[1].ColumnName == "geometry");
+         Assert.AreEqual("geometry", dataTable.Columns[1].ColumnName);
          Assert.IsTrue(dataTable.Columns[1].ExtendedProperties.ContainsKey("is_geo_column"));
          Assert.IsTrue(HasGeoFormat(dataTable.Columns[1], GeometryFormat.WKB));
 
@@ -182,9 +182,9 @@ namespace GISBlox.IO.GeoParquet.Tests
 
          DataTable dataTable = GeoParquetReader.ReadColumn(fileName, "geometry", GeometryFormat.WKT);
 
-         Assert.IsTrue(dataTable.Columns.Count == 1);
-         Assert.IsTrue(dataTable.Columns[0].ColumnName == "geometry");
-         Assert.IsTrue(dataTable.Columns[0].DataType == typeof(string));
+         Assert.HasCount(1, dataTable.Columns);
+         Assert.AreEqual("geometry", dataTable.Columns[0].ColumnName);
+         Assert.AreEqual(typeof(string), dataTable.Columns[0].DataType);
 
          // Is the 'geometry' column a valid geometry column that contains WKT geometries?
          Assert.IsTrue(dataTable.Columns[0].ExtendedProperties.ContainsKey("is_geo_column"));
@@ -203,9 +203,9 @@ namespace GISBlox.IO.GeoParquet.Tests
 
          DataTable dataTable = GeoParquetReader.ReadColumns(fileName, columnNames, GeometryFormat.WKT);
 
-         Assert.IsTrue(dataTable.Columns.Count == 2);
-         Assert.IsTrue(dataTable.Columns[0].ColumnName == "name");
-         Assert.IsTrue(dataTable.Columns[1].ColumnName == "geometry");
+         Assert.HasCount(2, dataTable.Columns);
+         Assert.AreEqual("name", dataTable.Columns[0].ColumnName);
+         Assert.AreEqual("geometry", dataTable.Columns[1].ColumnName);
 
          // Is the 'geometry' column a valid geometry column that contains WKT geometries?
          Assert.IsTrue(dataTable.Columns[1].ExtendedProperties.ContainsKey("is_geo_column"));
@@ -225,8 +225,8 @@ namespace GISBlox.IO.GeoParquet.Tests
 
          DataTable dataTable = GeoParquetReader.ReadColumn(fileName, columnIndex, GeometryFormat.WKT);
 
-         Assert.IsTrue(dataTable.Columns.Count == 1);
-         Assert.IsTrue(dataTable.Columns[0].ColumnName == "name");
+         Assert.HasCount(1, dataTable.Columns);
+         Assert.AreEqual("name", dataTable.Columns[0].ColumnName);
 
          // Is the 'name' column a valid geometry column?
          Assert.IsFalse(dataTable.Columns[0].ExtendedProperties.ContainsKey("is_geo_column"));
@@ -244,14 +244,14 @@ namespace GISBlox.IO.GeoParquet.Tests
 
          DataTable dataTable = GeoParquetReader.ReadColumns(fileName, columnIndexes, GeometryFormat.WKT);
 
-         Assert.IsTrue(dataTable.Columns.Count == 2);
-         Assert.IsTrue(dataTable.Columns[0].ColumnName == "name");
+         Assert.HasCount(2, dataTable.Columns);
+         Assert.AreEqual("name", dataTable.Columns[0].ColumnName);
 
          // Is the 'name' column a valid geometry column?
          Assert.IsFalse(dataTable.Columns[0].ExtendedProperties.ContainsKey("is_geo_column"));
 
          // Is the 'geometry' column a valid geometry column that contains WKT geometries?
-         Assert.IsTrue(dataTable.Columns[1].ColumnName == "geometry");
+         Assert.AreEqual("geometry", dataTable.Columns[1].ColumnName);
          Assert.IsTrue(dataTable.Columns[1].ExtendedProperties.ContainsKey("is_geo_column"));
          Assert.IsTrue(HasGeoFormat(dataTable.Columns[1], GeometryFormat.WKT));
 
@@ -269,11 +269,11 @@ namespace GISBlox.IO.GeoParquet.Tests
 
          DataTable dataTable = GeoParquetReader.ReadColumns(fileName, columnNames, GeometryFormat.WKB);
 
-         Assert.IsTrue(dataTable.Columns.Count == 4);
-         Assert.IsTrue(dataTable.Columns[0].ColumnName == "name");
-         Assert.IsTrue(dataTable.Columns[1].ColumnName == "geometry1");
-         Assert.IsTrue(dataTable.Columns[2].ColumnName == "other name");
-         Assert.IsTrue(dataTable.Columns[3].ColumnName == "geometry2");
+         Assert.HasCount(4, dataTable.Columns);
+         Assert.AreEqual("name", dataTable.Columns[0].ColumnName);
+         Assert.AreEqual("geometry1", dataTable.Columns[1].ColumnName);
+         Assert.AreEqual("other name", dataTable.Columns[2].ColumnName);
+         Assert.AreEqual("geometry2", dataTable.Columns[3].ColumnName);
 
          // Check if the 'geometry1' and 'geometry2' columns are valid geometry columns that contain WKB geometries
          Assert.IsTrue(dataTable.Columns[1].ExtendedProperties.ContainsKey("is_geo_column"));
@@ -299,11 +299,11 @@ namespace GISBlox.IO.GeoParquet.Tests
 
          DataTable dataTable = GeoParquetReader.ReadColumns(fileName, columnNames, GeometryFormat.WKT);
 
-         Assert.IsTrue(dataTable.Columns.Count == 4);
-         Assert.IsTrue(dataTable.Columns[0].ColumnName == "name");
-         Assert.IsTrue(dataTable.Columns[1].ColumnName == "geometry1");
-         Assert.IsTrue(dataTable.Columns[2].ColumnName == "other name");
-         Assert.IsTrue(dataTable.Columns[3].ColumnName == "geometry2");
+         Assert.HasCount(4, dataTable.Columns);
+         Assert.AreEqual("name", dataTable.Columns[0].ColumnName);
+         Assert.AreEqual("geometry1", dataTable.Columns[1].ColumnName);
+         Assert.AreEqual("other name", dataTable.Columns[2].ColumnName);
+         Assert.AreEqual("geometry2", dataTable.Columns[3].ColumnName);
 
          // Check if the 'geometry1' and 'geometry2' columns are valid geometry columns that contain WKT geometries
          Assert.IsTrue(dataTable.Columns[1].ExtendedProperties.ContainsKey("is_geo_column"));
@@ -328,8 +328,8 @@ namespace GISBlox.IO.GeoParquet.Tests
 
          DataTable dataTable = GeoParquetReader.ReadAll(fileName, GeometryFormat.WKB);
 
-         Assert.IsTrue(dataTable.Columns.Count == 3);
-         Assert.IsTrue(dataTable.Rows.Count == 0);
+         Assert.HasCount(3, dataTable.Columns);
+         Assert.IsEmpty(dataTable.Rows);
       }
 
       [TestMethod]
@@ -339,8 +339,8 @@ namespace GISBlox.IO.GeoParquet.Tests
 
          DataTable dataTable = GeoParquetReader.ReadAll(fileName, GeometryFormat.WKT);
 
-         Assert.IsTrue(dataTable.Columns.Count == 3);
-         Assert.IsTrue(dataTable.Rows.Count == 2);
+         Assert.HasCount(3, dataTable.Columns);
+         Assert.HasCount(2, dataTable.Rows);
 
          // Check if the 'geometry1' column is a valid geometry column that contain WKT geometries
          Assert.IsTrue(dataTable.Columns[2].ExtendedProperties.ContainsKey("is_geo_column"));

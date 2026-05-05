@@ -258,7 +258,7 @@ namespace GISBlox.IO.GeoParquet.Tests
          List<string> geoColumns = ["geometry_wkt", "geometry_wkb"];
 
          // Writer does not support mixed geometry formats
-         Assert.ThrowsException<GeometryException>(() =>
+         Assert.Throws<GeometryException>(() =>
          {
             GeoParquetWriter.Write(fileName, dataTable, geoColumns, "geometry_wkt");
          });

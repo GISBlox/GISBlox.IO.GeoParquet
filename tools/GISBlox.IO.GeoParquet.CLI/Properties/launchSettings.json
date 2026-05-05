@@ -2,7 +2,7 @@
   "profiles": {
     "GISBlox.IO.GeoParquet.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "\"C:\\Dev\\Repos\\GitHub\\GISBlox\\GISBlox.IO.GeoParquet\\tests\\Samples\\multiple-types.parquet\""
+      "commandLineArgs": "--file \"C:\\Dev\\Repos\\GitHub\\GISBlox\\GISBlox.IO.GeoParquet\\tests\\Samples\\multiple-types.parquet\""
     }
   }
 }
